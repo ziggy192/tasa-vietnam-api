@@ -73,7 +73,7 @@ func uploadImageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func testUploadImgur(w http.ResponseWriter, r *http.Request) {
-	file, err := ioutil.ReadFile("assets/57232103_572879629870418_546118032422862848_n.jpg")
+	file, err := ioutil.ReadFile("../assets/57232103_572879629870418_546118032422862848_n.jpg")
 	check(err)
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Println(w.Header())
@@ -133,6 +133,7 @@ func main() {
 	router.HandleFunc("/test/upload", testUploadImgur).Methods("GET")
 	router.HandleFunc("/images/upload", uploadImageHandler).Methods("POST")
 
+	fmt.Println("Version ===> ", version)
 	fmt.Println("Server running at :8000")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
