@@ -38,9 +38,8 @@ func pingHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 func setupDB(address string) *gorm.DB {
-	connectionString := fmt.Sprintf("root:12345678@(%s)/tasa?charset=utf8&parseTime=True&loc=Local", address)
+	connectionString := fmt.Sprintf("remote:12345678@(%s)/tasa?charset=utf8&parseTime=True&loc=Local", address)
 	db, _ := gorm.Open("mysql", connectionString)
-
 	return db
 }
 
@@ -55,6 +54,11 @@ func testPostHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func insertPost(w http.ResponseWriter, r *http.Request) {
+	p := ProjectPost{Title: "công trình abc", Body: "adsfas fsa fas dfas df as"}
+	db.Create(&p)
+
+}
 func uploadImageHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("uploadImageHandler hit")
@@ -126,11 +130,13 @@ func settupFlags(dbAddress *string) {
 	flag.StringVar(dbAddress, "address", "localhost:3306", "the database address")
 	flag.Parse()
 }
+
 func main() {
 
 	var dbAddress string
 	settupFlags(&dbAddress)
 	db := setupDB(dbAddress)
+	defer db.Close()
 
 	//p := ProjectPost{Title: "công trình abc", Body: "adsfas fsa fas dfas df as"}
 	//db.Create(&p)

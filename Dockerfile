@@ -4,4 +4,4 @@ COPY . .
 
 RUN go get ./...  && go build
 
-CMD ["./tasa-vietnam-api","-address=localhost:3306"]
+CMD ["./tasa-vietnam-api","-address=54.169.62.76:3306"]
