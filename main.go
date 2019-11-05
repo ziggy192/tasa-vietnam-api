@@ -30,16 +30,17 @@ type ProjectPost struct {
 	UpdatedAt time.Time
 	Title     string
 	Body      string
-	Tags      string
 }
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Server is running...")
 
 }
-func setupDB(address string) *gorm.DB {
-	connectionString := fmt.Sprintf("remote:12345678@(%s)/tasa?charset=utf8&parseTime=True&loc=Local", address)
-	db, _ := gorm.Open("mysql", connectionString)
+func setupDB(address string, username string, password string) *gorm.DB {
+	connectionString := fmt.Sprintf("%s:%s@(%s)/tasa?charset=utf8&parseTime=True&loc=Local",
+		username, password, address)
+	db, err := gorm.Open("mysql", connectionString)
+	check(err)
 	return db
 }
 
@@ -49,14 +50,30 @@ func testPostHandler(w http.ResponseWriter, r *http.Request) {
 	enc := json.NewEncoder(w)
 
 	var v map[string]interface{}
+	w.Header().Set("Content-type", "application/json")
 	dec.Decode(&v)
 	enc.Encode(&v)
 
 }
 
-func insertPost(w http.ResponseWriter, r *http.Request) {
-	p := ProjectPost{Title: "công trình abc", Body: "adsfas fsa fas dfas df as"}
+func insertPostHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	dec := json.NewDecoder(r.Body)
+	enc := json.NewEncoder(w)
+
+	var p ProjectPost
+	dec.Decode(&p)
 	db.Create(&p)
+	enc.Encode(p)
+
+}
+
+func getAllPostsHandler(w http.ResponseWriter, r *http.Request) {
+	var posts []ProjectPost
+	db.Find(&posts)
+	enc := json.NewEncoder(w)
+	w.Header().Set("content-type", "application/json")
+	enc.Encode(posts)
 
 }
 func uploadImageHandler(w http.ResponseWriter, r *http.Request) {
@@ -126,29 +143,39 @@ func check(err error) {
 		panic(err)
 	}
 }
-func settupFlags(dbAddress *string) {
+func settupFlags(dbAddress *string, username *string, password *string) {
 	flag.StringVar(dbAddress, "address", "localhost:3306", "the database address")
+	flag.StringVar(username, "username", "root", "username of database")
+	flag.StringVar(password, "password", "12345678", "password of database")
 	flag.Parse()
 }
+
+var db *gorm.DB
 
 func main() {
 
 	var dbAddress string
-	settupFlags(&dbAddress)
-	db := setupDB(dbAddress)
-	defer db.Close()
+	var username string
+	var password string
+	settupFlags(&dbAddress, &username, &password)
+	db = setupDB(dbAddress, username, password)
+	if db != nil {
+		defer db.Close()
+	}
 
 	//p := ProjectPost{Title: "công trình abc", Body: "adsfas fsa fas dfas df as"}
 	//db.Create(&p)
-	fmt.Println(("trying query in project_posts..."))
-	pselect := ProjectPost{}
-	db.Where("id = ?", 1).First(&pselect)
-	fmt.Println(pselect)
+	// fmt.Println(("trying query in project_posts..."))
+	// pselect := ProjectPost{}
+	// db.Where("id = ?", 1).First(&pselect)
+	// fmt.Println(pselect)
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/ping", pingHandler)
 	router.HandleFunc("/test/post", testPostHandler).Methods("POST")
 	router.HandleFunc("/test/upload", testUploadImgur).Methods("GET")
 	router.HandleFunc("/images/upload", uploadImageHandler).Methods("POST")
+	router.HandleFunc("/posts", insertPostHandler).Methods("POST")
+	router.HandleFunc("/posts", getAllPostsHandler).Methods("GET")
 
 	fmt.Println("Version ===> ", version)
 	fmt.Println("Server running at :8000")
