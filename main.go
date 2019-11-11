@@ -144,20 +144,30 @@ func check(err error) {
 	}
 }
 func settupFlags(dbAddress *string, username *string, password *string) {
-	flag.StringVar(dbAddress, "address", "localhost:3306", "the database address")
-	flag.StringVar(username, "username", "root", "username of database")
-	flag.StringVar(password, "password", "12345678", "password of database")
+	flag.StringVar(dbAddress, "dbAddress", "", "the database address (required)")
+	flag.StringVar(username, "username", "", "username of database (required)")
+	flag.StringVar(password, "password", "", "password of database (required)")
 	flag.Parse()
 }
 
 var db *gorm.DB
 
+func validateFlags(flags ...interface{}){
+	for _, val := range flags {
+		if val == "" {
+			err:= fmt.Errorf("required arguments is not inputed")
+			flag.PrintDefaults()
+			panic(err)
+		}
+	}
+}
 func main() {
 
 	var dbAddress string
 	var username string
 	var password string
 	settupFlags(&dbAddress, &username, &password)
+	validateFlags(dbAddress, username, password)
 	db = setupDB(dbAddress, username, password)
 	if db != nil {
 		defer db.Close()
