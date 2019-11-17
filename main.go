@@ -17,6 +17,8 @@ import (
 
 	"io/ioutil"
 	"mime/multipart"
+
+	"strconv"
 )
 
 // todo get this from config file
@@ -30,6 +32,18 @@ type ProjectPost struct {
 	UpdatedAt time.Time
 	Title     string
 	Body      string
+	Subtitle string 
+	Images 	[]ProjectPostImage
+}
+
+type ProjectPostImage struct {
+	ID 			uint `gorm:"primary_key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	url 	string
+	IsDefault	bool
+	ProjectPostId uint
+	
 }
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
@@ -68,12 +82,43 @@ func insertPostHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+
+func getAllImagesFromPostHanlder(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("content-type","application/json")
+	enc := json.NewEncoder(w)
+	var images []ProjectPostImage
+	projectPostId, err := strconv.ParseUint(mux.Vars(r)["postId"],10,32)
+	check(err)
+
+	db.Where(&ProjectPostImage{			
+		ProjectPostId: uint(projectPostId),
+	}).Find(&images)
+
+	enc.Encode(images)
+
+
+
+}
 func getAllPostsHandler(w http.ResponseWriter, r *http.Request) {
 	var posts []ProjectPost
-	db.Find(&posts)
+	db.Preload("Images").Find(&posts)
 	enc := json.NewEncoder(w)
 	w.Header().Set("content-type", "application/json")
 	enc.Encode(posts)
+
+}
+
+func getPostByIdHandler(w http.ResponseWriter, r *http.Request){
+	var vars = mux.Vars(r)
+	var postId = vars["postId"]
+	
+	enc := json.NewEncoder(w)
+	w.Header().Set("content-type","application/json")
+	var post ProjectPost
+	// var images []ProjectPostImage
+	//db.First(&post,postId)
+	db.Preload("Images").First(&post,postId)
+	enc.Encode(post)
 
 }
 func uploadImageHandler(w http.ResponseWriter, r *http.Request) {
@@ -173,6 +218,9 @@ func main() {
 		defer db.Close()
 	}
 
+	//debug
+	db = db.Debug()
+
 	//p := ProjectPost{Title: "công trình abc", Body: "adsfas fsa fas dfas df as"}
 	//db.Create(&p)
 	// fmt.Println(("trying query in project_posts..."))
@@ -186,6 +234,8 @@ func main() {
 	router.HandleFunc("/images/upload", uploadImageHandler).Methods("POST")
 	router.HandleFunc("/posts", insertPostHandler).Methods("POST")
 	router.HandleFunc("/posts", getAllPostsHandler).Methods("GET")
+	router.HandleFunc("/posts/{postId:[0-9]+}",getPostByIdHandler).Methods("GET")
+	router.HandleFunc("/posts/{postId:[0-9]+}/images", getAllImagesFromPostHanlder).Methods("GET")
 
 	fmt.Println("Version ===> ", version)
 	fmt.Println("Server running at :8000")
