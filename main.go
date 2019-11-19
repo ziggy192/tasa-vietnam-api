@@ -30,20 +30,20 @@ type ProjectPost struct {
 	ID        uint `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	DeletedAt *time.Time
 	Title     string
 	Body      string
-	Subtitle string 
-	Images 	[]ProjectPostImage
+	Subtitle  string
+	Images    []ProjectPostImage
 }
 
 type ProjectPostImage struct {
-	ID 			uint `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	url 	string
-	IsDefault	bool
+	ID            uint `gorm:"primary_key"`
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	url           string
+	IsDefault     bool
 	ProjectPostId uint
-	
 }
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
@@ -77,26 +77,25 @@ func insertPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	var p ProjectPost
 	dec.Decode(&p)
+
 	db.Create(&p)
+
 	enc.Encode(p)
 
 }
 
-
-func getAllImagesFromPostHanlder(w http.ResponseWriter, r *http.Request){
-	w.Header().Set("content-type","application/json")
+func getAllImagesFromPostHanlder(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
 	enc := json.NewEncoder(w)
 	var images []ProjectPostImage
-	projectPostId, err := strconv.ParseUint(mux.Vars(r)["postId"],10,32)
+	projectPostId, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 32)
 	check(err)
 
-	db.Where(&ProjectPostImage{			
+	db.Where(&ProjectPostImage{
 		ProjectPostId: uint(projectPostId),
 	}).Find(&images)
 
 	enc.Encode(images)
-
-
 
 }
 func getAllPostsHandler(w http.ResponseWriter, r *http.Request) {
@@ -108,17 +107,61 @@ func getAllPostsHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getPostByIdHandler(w http.ResponseWriter, r *http.Request){
-	var vars = mux.Vars(r)
-	var postId = vars["postId"]
-	
+func putPostHandler(w http.ResponseWriter, r *http.Request) {
+	dec := json.NewDecoder(r.Body)
 	enc := json.NewEncoder(w)
-	w.Header().Set("content-type","application/json")
+
+	w.Header().Set("content-type", "application/json")
+
+	vars := mux.Vars(r)
+	postId := vars["id"]
+
+	var bodyPost ProjectPost
+	dec.Decode(&bodyPost)
+
+	var foundPost ProjectPost
+	db.First(&foundPost, postId)
+	if foundPost.ID == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	db.Model(&foundPost).Updates(ProjectPost{
+		Title:    bodyPost.Title,
+		Body:     bodyPost.Body,
+		Subtitle: bodyPost.Subtitle,
+	})
+
+	enc.Encode(foundPost)
+}
+
+func deletePostHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	postId := vars["id"]
+	var post ProjectPost
+	db.First(&post, postId)
+	if post.ID == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	db.Delete(&post)
+}
+func getPostByIdHandler(w http.ResponseWriter, r *http.Request) {
+	var vars = mux.Vars(r)
+	var postId = vars["id"]
+
+	enc := json.NewEncoder(w)
+	w.Header().Set("content-type", "application/json")
+
 	var post ProjectPost
 	// var images []ProjectPostImage
 	//db.First(&post,postId)
-	db.Preload("Images").First(&post,postId)
-	enc.Encode(post)
+	db.Preload("Images").First(&post, postId)
+	if post.ID != 0 {
+
+		enc.Encode(post)
+	} else {
+		w.WriteHeader(http.StatusNotFound) // used for writing status code only
+	}
 
 }
 func uploadImageHandler(w http.ResponseWriter, r *http.Request) {
@@ -197,10 +240,10 @@ func settupFlags(dbAddress *string, username *string, password *string) {
 
 var db *gorm.DB
 
-func validateFlags(flags ...interface{}){
+func validateFlags(flags ...interface{}) {
 	for _, val := range flags {
 		if val == "" {
-			err:= fmt.Errorf("required arguments is not inputed")
+			err := fmt.Errorf("required arguments is not inputed")
 			flag.PrintDefaults()
 			panic(err)
 		}
@@ -221,12 +264,6 @@ func main() {
 	//debug
 	db = db.Debug()
 
-	//p := ProjectPost{Title: "công trình abc", Body: "adsfas fsa fas dfas df as"}
-	//db.Create(&p)
-	// fmt.Println(("trying query in project_posts..."))
-	// pselect := ProjectPost{}
-	// db.Where("id = ?", 1).First(&pselect)
-	// fmt.Println(pselect)
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/ping", pingHandler)
 	router.HandleFunc("/test/post", testPostHandler).Methods("POST")
@@ -234,8 +271,10 @@ func main() {
 	router.HandleFunc("/images/upload", uploadImageHandler).Methods("POST")
 	router.HandleFunc("/posts", insertPostHandler).Methods("POST")
 	router.HandleFunc("/posts", getAllPostsHandler).Methods("GET")
-	router.HandleFunc("/posts/{postId:[0-9]+}",getPostByIdHandler).Methods("GET")
-	router.HandleFunc("/posts/{postId:[0-9]+}/images", getAllImagesFromPostHanlder).Methods("GET")
+	router.HandleFunc("/posts/{id:[0-9]+}", getPostByIdHandler).Methods("GET")
+	router.HandleFunc("/posts/{id:[0-9]+}/images", getAllImagesFromPostHanlder).Methods("GET")
+	router.HandleFunc("/posts/{id:[0-9]+}", putPostHandler).Methods("PUT")
+	router.HandleFunc("/posts/{id:[0-9]+}", deletePostHandler).Methods("DELETE")
 
 	fmt.Println("Version ===> ", version)
 	fmt.Println("Server running at :8000")
