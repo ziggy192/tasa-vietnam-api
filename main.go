@@ -27,23 +27,24 @@ const AccessToken = "567d191b832101282951460d490181a4ca8eb3e9"
 
 //shit
 type ProjectPost struct {
-	ID        uint `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time
-	Title     string
-	Body      string
-	Subtitle  string
-	Images    []ProjectPostImage
+	ID        uint               `json:"id" gorm:"primary_key"`
+	CreatedAt time.Time          `json:"createdAt"`
+	UpdatedAt time.Time          `json:"updatedAt"`
+	DeletedAt *time.Time         `json:"deletedAt"`
+	Title     string             `json:"title"`
+	Body      string             `json:"body"`
+	Subtitle  string             `json:"subittle"`
+	Images    []ProjectPostImage `json:"images"`
 }
 
 type ProjectPostImage struct {
-	ID            uint `gorm:"primary_key"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-	Url           string
-	IsDefault     bool
-	ProjectPostId uint
+	ID            uint       `json:"id" gorm:"primary_key"`
+	CreatedAt     time.Time  `json:"createdAt"`
+	UpdatedAt     time.Time  `json:"updatedAt"`
+	DeletedAt     *time.Time `json:"deletedAt"`
+	Url           string     `json:"url"`
+	IsDefault     bool       `json:"isDefault"`
+	ProjectPostId uint       `json:"projectPostId"`
 }
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
@@ -77,11 +78,8 @@ func insertPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	var p ProjectPost
 	dec.Decode(&p)
-
 	db.Create(&p)
-
 	enc.Encode(p)
-
 }
 
 func getAllImagesFromPostHanlder(w http.ResponseWriter, r *http.Request) {
@@ -97,6 +95,65 @@ func getAllImagesFromPostHanlder(w http.ResponseWriter, r *http.Request) {
 
 	enc.Encode(images)
 
+}
+
+func getImageFromPostHanlder(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	enc := json.NewEncoder(w)
+	imageId := mux.Vars(r)["imageId"]
+	var image ProjectPostImage
+	if db.First(&image, imageId).RecordNotFound() {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	enc.Encode(image)
+}
+func insertProjectPostImageHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+
+	enc := json.NewEncoder(w)
+	dec := json.NewDecoder(r.Body)
+
+	var bodyImage = ProjectPostImage{}
+	dec.Decode(&bodyImage)
+	postId, err := strconv.ParseUint(mux.Vars(r)["id"], 10, 32)
+	check(err)
+
+	image := ProjectPostImage{
+		Url:           bodyImage.Url,
+		ProjectPostId: uint(postId),
+	}
+	bodyImage.ProjectPostId = uint(postId)
+	db.Create(&image)
+	enc.Encode(image)
+}
+
+func putProjectPostImageHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	imageIdStr := mux.Vars(r)["imageId"]
+	dec := json.NewDecoder(r.Body)
+	enc := json.NewEncoder(w)
+	var bodyImage ProjectPostImage
+	dec.Decode(&bodyImage)
+	var foundImage ProjectPostImage
+	if db.First(&foundImage, imageIdStr).RecordNotFound() {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	db.Model(&foundImage).Update("url", bodyImage.Url) // use Update instead of Updates for zero values
+	enc.Encode(foundImage)
+}
+func deleteProjectPostImageHandler(w http.ResponseWriter, r *http.Request) {
+	imageId := mux.Vars(r)["imageId"]
+	if db.First(&ProjectPostImage{}, imageId).RecordNotFound() {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	db.Delete(&ProjectPostImage{}, "id = ?", imageId).RecordNotFound()
+	// ok
+	w.WriteHeader(http.StatusOK)
 }
 func getAllPostsHandler(w http.ResponseWriter, r *http.Request) {
 	var posts []ProjectPost
@@ -121,7 +178,7 @@ func putPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	var foundPost ProjectPost
 	db.First(&foundPost, postId)
-	if foundPost.ID == 0 {
+	if db.First(&foundPost, postId).RecordNotFound() {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -139,7 +196,7 @@ func deletePostHandler(w http.ResponseWriter, r *http.Request) {
 	postId := vars["id"]
 	var post ProjectPost
 	db.First(&post, postId)
-	if post.ID == 0 {
+	if db.First(&post, postId).RecordNotFound() {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -273,6 +330,10 @@ func main() {
 	router.HandleFunc("/posts", getAllPostsHandler).Methods("GET")
 	router.HandleFunc("/posts/{id:[0-9]+}", getPostByIdHandler).Methods("GET")
 	router.HandleFunc("/posts/{id:[0-9]+}/images", getAllImagesFromPostHanlder).Methods("GET")
+	router.HandleFunc("/posts/{id:[0-9]+}/images", insertProjectPostImageHandler).Methods("POST")
+	router.HandleFunc("/posts/{id:[0-9]+}/images/{imageId:[0-9]+}", getImageFromPostHanlder).Methods("GET")
+	router.HandleFunc("/posts/{id:[0-9]+}/images/{imageId:[0-9]+}", deleteProjectPostImageHandler).Methods("DELETE")
+	router.HandleFunc("/posts/{id:[0-9]+}/images/{imageId:[0-9]+}", putProjectPostImageHandler).Methods("PUT")
 	router.HandleFunc("/posts/{id:[0-9]+}", putPostHandler).Methods("PUT")
 	router.HandleFunc("/posts/{id:[0-9]+}", deletePostHandler).Methods("DELETE")
 
