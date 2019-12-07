@@ -1,4 +1,5 @@
 #!/bin/bash
+#run local docker-hosted app
 
 DB_ADDRESS=host.docker.internal:3306 #this address is for macos docker only ^^ | use docker network=host and 'localhost' for Linux distros
 DB_USERNAME=root
