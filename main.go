@@ -8,6 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm"
 
+	"github.com/ziggy192/tasa-vietnam-api/pkg/repo"
 	"github.com/ziggy192/tasa-vietnam-api/pkg/router"
 )
 
@@ -19,5 +20,6 @@ func main() {
 	fmt.Println("Version ===> ", version)
 	fmt.Println("Server running at :8000")
 	log.Fatal(http.ListenAndServe(":8000", router))
+	repo.Close()
 
 }

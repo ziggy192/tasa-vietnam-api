@@ -41,10 +41,17 @@ func init() {
 	settupFlags(&dbAddress, &username, &password)
 	validateFlags(dbAddress, username, password)
 	DB = setupDB(dbAddress, username, password)
-	if DB != nil {
-		defer DB.Close()
-	}
+	// if DB != nil {
+	// 	defer DB.Close()
+	// }
 
 	//debug
 	DB = DB.Debug()
+}
+
+//close DB
+func Close() {
+	if DB != nil {
+		DB.Close()
+	}
 }

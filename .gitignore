@@ -1,6 +1,7 @@
 #by nghialq
 run_prod.sh
 tasa-vietnam-api
+setup_mysql_database.sh
 # Created by https://www.gitignore.io/api/go
 # Edit at https://www.gitignore.io/?templates=go
 
