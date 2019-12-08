@@ -98,7 +98,7 @@ func DeleteProjectPostImageHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	db.Delete(&model.ProjectPostImage{}, "id = ?", imageId).RecordNotFound()
+	check(db.Delete(&model.ProjectPostImage{}, "id = ?", imageId).Error)
 	// ok
 	w.WriteHeader(http.StatusOK)
 }
@@ -166,12 +166,13 @@ func PutPostHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	db.Model(&foundPost).Updates(model.ProjectPost{
+	err := db.Model(&foundPost).Updates(model.ProjectPost{
 		Title:    bodyPost.Title,
 		Body:     bodyPost.Body,
 		Subtitle: bodyPost.Subtitle,
 		Section:  bodyPost.Section,
-	})
+	}).Error
+	check(err)
 
 	enc.Encode(foundPost)
 }
@@ -185,7 +186,7 @@ func DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	db.Delete(&post)
+	check(db.Delete(&post).Error)
 }
 func GetPostByIdHandler(w http.ResponseWriter, r *http.Request) {
 	var vars = mux.Vars(r)
