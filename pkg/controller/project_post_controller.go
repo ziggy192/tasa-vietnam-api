@@ -3,12 +3,18 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/gorilla/mux"
 
+	"github.com/ziggy192/tasa-vietnam-api/pkg/dto/response"
 	"github.com/ziggy192/tasa-vietnam-api/pkg/model"
 )
+
+//todo take this from config file
+const DEFAULT_LIMIT = 100
+const DEFAULT_OFFSET = 0
 
 func InsertPostHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
@@ -94,12 +100,46 @@ func DeleteProjectPostImageHandler(w http.ResponseWriter, r *http.Request) {
 	// ok
 	w.WriteHeader(http.StatusOK)
 }
+
+//return nil if error
+func getQueryParam(params url.Values, key string) (int, error) {
+	var ret int
+	str := params.Get(key)
+	valueInt64, err := strconv.ParseInt(str, 10, 32)
+	if err == nil {
+		ret = int(valueInt64)
+	}
+	return ret, err
+
+}
 func GetAllPostsHandler(w http.ResponseWriter, r *http.Request) {
+
+	limit, err := getQueryParam(r.URL.Query(), "limit")
+	if err != nil {
+		limit = DEFAULT_LIMIT
+	}
+	offset, err := getQueryParam(r.URL.Query(), "offset")
+
+	if err != nil {
+		offset = DEFAULT_OFFSET
+	}
+
 	var posts []model.ProjectPost
-	db.Preload("Images").Find(&posts)
+	db.Preload("Images").Limit(limit).Offset(offset).Find(&posts)
+
+	var total int
+	db.Model(&model.ProjectPost{}).Count(&total)
+
+	responseDTO := response.BaseListResponse{
+		Total:  total,
+		Limit:  limit,
+		Offset: offset,
+		Data:   posts,
+	}
+
 	enc := json.NewEncoder(w)
 	w.Header().Set("content-type", "application/json")
-	enc.Encode(posts)
+	enc.Encode(responseDTO)
 
 }
 
