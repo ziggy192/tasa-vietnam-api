@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -13,23 +14,43 @@ import (
 const ClientID = "5958ddd634f2aea"
 const AccessToken = "567d191b832101282951460d490181a4ca8eb3e9"
 
+//handler to upload image and return url
 func UploadImageHandler(w http.ResponseWriter, r *http.Request) {
 
+	w.Header().Set("content-type", "application/json")
+	enc := json.NewEncoder(w)
+
 	fmt.Println("uploadImageHandler hit")
-	r.ParseMultipartForm(10 << 20)
+	r.ParseMultipartForm(10 << 20) // limit 10*2^20
 
 	file, fileHeader, err := r.FormFile("image")
-	if err != nil {
-		fmt.Println("Error when upload file")
-		fmt.Println(err)
-		return
-	}
+	check(err)
 	defer file.Close()
 
 	fmt.Printf("Uploaded file %s\n", fileHeader.Filename)
-	fmt.Printf("File size=%v", fileHeader.Size)
+	fmt.Printf("File size=%v\n", fileHeader.Size)
 
 	//todo upload to imgur
+	data, err := ioutil.ReadAll(file)
+	check(err)
+	resJSON := UploadImageToImgur(data)
+
+	//get url from resJson
+	if resJSON["success"].(bool) == false {
+		fmt.Println("imgur status == false")
+		bufio.NewWriter(w).WriteString("imgur status == false")
+		return
+	}
+
+	//have a separate struct for this
+	link := resJSON["data"].(map[string]interface{})["link"].(string)
+
+	//map to response dto
+	resPostImage := UploadImageResponse{
+		URL: link,
+	}
+
+	enc.Encode(resPostImage)
 }
 
 func TestUploadImgur(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +89,7 @@ func UploadImageToImgur(image []byte) map[string]interface{} {
 	var result map[string]interface{}
 	json.NewDecoder(response.Body).Decode(&result)
 
-	fmt.Println(result)
+	fmt.Println("imgurResponse=", result)
 
 	return result
 

@@ -1,12 +1,8 @@
 package util
 
-import (
-	"log"
-)
-
 func Check(err error) {
 	if err != nil {
-		log.Fatal(err)
+		// log.Print(err.Error())
 		panic(err)
 	}
 }

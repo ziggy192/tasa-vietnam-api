@@ -17,9 +17,8 @@ import (
 func main() {
 
 	router := router.NewRouter()
-	fmt.Println("Version ===> ", version)
 	fmt.Println("Server running at :8000")
+	defer repo.Close()
 	log.Fatal(http.ListenAndServe(":8000", router))
-	repo.Close()
 
 }

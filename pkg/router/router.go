@@ -1,9 +1,12 @@
 package router
 
 import (
+	"errors"
 	"github.com/gorilla/mux"
+	"net/http"
 
 	"github.com/ziggy192/tasa-vietnam-api/pkg/controller"
+	"github.com/ziggy192/tasa-vietnam-api/pkg/middleware"
 )
 
 //create new router from controllers
@@ -23,5 +26,9 @@ func NewRouter() *mux.Router {
 	router.HandleFunc("/images/{imageId:[0-9]+}", controller.PutProjectPostImageHandler).Methods("PUT")
 	router.HandleFunc("/posts/{id:[0-9]+}", controller.PutPostHandler).Methods("PUT")
 	router.HandleFunc("/posts/{id:[0-9]+}", controller.DeletePostHandler).Methods("DELETE")
+	router.HandleFunc("/test/panic", func(w http.ResponseWriter, r *http.Request) {
+		panic(errors.New("Error found in /test/panic"))
+	})
+	router.Use(middleware.RecoveryHandler)
 	return router
 }

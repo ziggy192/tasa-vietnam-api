@@ -3,12 +3,14 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
+// PingHandler ping
 func PingHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Server is running...")
-
+	log.Println("ping")
 }
 
 func TestPostHandler(w http.ResponseWriter, r *http.Request) {
