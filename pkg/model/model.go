@@ -12,6 +12,7 @@ type ProjectPost struct {
 	Title     string             `json:"title"`
 	Body      string             `json:"body"`
 	Subtitle  string             `json:"subittle"`
+	Section   string             `json:"section"`
 	Images    []ProjectPostImage `json:"images"`
 }
 

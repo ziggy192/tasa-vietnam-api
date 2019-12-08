@@ -1,9 +1,7 @@
 package router
 
 import (
-	"errors"
 	"github.com/gorilla/mux"
-	"net/http"
 
 	"github.com/ziggy192/tasa-vietnam-api/pkg/controller"
 	"github.com/ziggy192/tasa-vietnam-api/pkg/middleware"
@@ -17,7 +15,7 @@ func NewRouter() *mux.Router {
 	router.HandleFunc("/test/upload", controller.TestUploadImgur).Methods("GET")
 	router.HandleFunc("/images/upload", controller.UploadImageHandler).Methods("POST")
 	router.HandleFunc("/posts", controller.InsertPostHandler).Methods("POST")
-	router.HandleFunc("/posts", controller.GetAllPostsHandler).Methods("GET")
+	router.HandleFunc("/posts", controller.GetPostsHandler).Methods("GET")
 	router.HandleFunc("/posts/{id:[0-9]+}", controller.GetPostByIdHandler).Methods("GET")
 	router.HandleFunc("/posts/{id:[0-9]+}/images", controller.GetAllImagesFromPostHanlder).Methods("GET")
 	router.HandleFunc("/posts/{id:[0-9]+}/images", controller.InsertProjectPostImageHandler).Methods("POST")
@@ -26,9 +24,8 @@ func NewRouter() *mux.Router {
 	router.HandleFunc("/images/{imageId:[0-9]+}", controller.PutProjectPostImageHandler).Methods("PUT")
 	router.HandleFunc("/posts/{id:[0-9]+}", controller.PutPostHandler).Methods("PUT")
 	router.HandleFunc("/posts/{id:[0-9]+}", controller.DeletePostHandler).Methods("DELETE")
-	router.HandleFunc("/test/panic", func(w http.ResponseWriter, r *http.Request) {
-		panic(errors.New("Error found in /test/panic"))
-	})
+	router.HandleFunc("/sections", controller.GetSectionsHandler).Methods("GET")
+	router.HandleFunc("/test/panic", controller.PanicHandler).Methods("GET")
 	router.Use(middleware.RecoveryHandler)
 	return router
 }

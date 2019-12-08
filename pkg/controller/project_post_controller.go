@@ -102,7 +102,7 @@ func DeleteProjectPostImageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 //return nil if error
-func getQueryParam(params url.Values, key string) (int, error) {
+func getQueryParamInt(params url.Values, key string) (int, error) {
 	var ret int
 	str := params.Get(key)
 	valueInt64, err := strconv.ParseInt(str, 10, 32)
@@ -112,23 +112,26 @@ func getQueryParam(params url.Values, key string) (int, error) {
 	return ret, err
 
 }
-func GetAllPostsHandler(w http.ResponseWriter, r *http.Request) {
 
-	limit, err := getQueryParam(r.URL.Query(), "limit")
+func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
+
+	limit, err := getQueryParamInt(r.URL.Query(), "limit")
 	if err != nil {
 		limit = DEFAULT_LIMIT
 	}
-	offset, err := getQueryParam(r.URL.Query(), "offset")
+	offset, err := getQueryParamInt(r.URL.Query(), "offset")
 
 	if err != nil {
 		offset = DEFAULT_OFFSET
 	}
 
+	section := r.URL.Query().Get("section")
 	var posts []model.ProjectPost
-	db.Preload("Images").Limit(limit).Offset(offset).Find(&posts)
-
 	var total int
-	db.Model(&model.ProjectPost{}).Count(&total)
+	// query all if section==""
+	db.Preload("Images").Where(&model.ProjectPost{
+		Section: section,
+	}).Limit(limit).Offset(offset).Find(&posts).Count(&total)
 
 	responseDTO := response.BaseListResponse{
 		Total:  total,
@@ -165,6 +168,7 @@ func PutPostHandler(w http.ResponseWriter, r *http.Request) {
 		Title:    bodyPost.Title,
 		Body:     bodyPost.Body,
 		Subtitle: bodyPost.Subtitle,
+		Section:  bodyPost.Section,
 	})
 
 	enc.Encode(foundPost)
