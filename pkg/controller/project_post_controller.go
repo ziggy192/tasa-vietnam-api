@@ -23,7 +23,9 @@ func InsertPostHandler(w http.ResponseWriter, r *http.Request) {
 
 	var p model.ProjectPost
 	dec.Decode(&p)
-	db.Create(&p)
+	if err := db.Create(&p).Error; err != nil {
+		panic(err)
+	}
 	enc.Encode(p)
 }
 
