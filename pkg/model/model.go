@@ -11,7 +11,7 @@ type ProjectPost struct {
 	DeletedAt *time.Time         `json:"deletedAt"`
 	Title     string             `json:"title"`
 	Body      string             `json:"body"`
-	Subtitle  string             `json:"subittle"`
+	Subtitle  string             `json:"subtitle"`
 	Section   string             `json:"section"`
 	Images    []ProjectPostImage `json:"images"`
 }
