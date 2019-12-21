@@ -21,7 +21,7 @@ func main() {
 	fmt.Println("Server running at :8000")
 	defer repo.Close()
 	log.Fatal(http.ListenAndServe(":8000", cors.New(cors.Options{
-		AllowedMethods:   []string{"POST", "PUT", "DELETE", "OPTIONS", "HEAD"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"},
 		AllowedOrigins:   []string{"*"},
 		AllowCredentials: false,
 		Debug:            true,
