@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="81bc7fe0-7fc8-482b-8ae7-73f843aa10e8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/pkg/controller/image_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/controller/image_controller.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" path="/usr/local/Cellar/go/1.15/libexec" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1gx1naXvlbbokVQVrutybqF0Krf" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+  </component>
+  <component name="RunManager" selected="Go Build.go build main.go">
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+      <module name="tasa-vietnam-api" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <parameters value="-dbAddress=localhost:3306 -username=root -password=12345678" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <package value="github.com/ziggy192/tasa-vietnam-api" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="ShConfigurationType">
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/run_local_builtin_go.sh" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="/bin/zsh" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="run_local_builtin_go.sh" type="ShConfigurationType">
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/run_local_builtin_go.sh" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="/bin/zsh" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.go build main.go" />
+      <item itemvalue="Shell Script.run_local_builtin_go.sh" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="512" y="398" key="#GOROOT" timestamp="1599041613510">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="512" y="398" key="#GOROOT/0.23.1440.877@0.23.1440.877" timestamp="1599041613510" />
+    <state x="442" y="292" key="#Notifications" timestamp="1599042033734">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="442" y="292" key="#Notifications/0.23.1440.877@0.23.1440.877" timestamp="1599042033733" />
+    <state x="184" y="123" width="1071" height="764" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1599042559360">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="184" y="123" width="1071" height="764" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.877@0.23.1440.877" timestamp="1599042559360" />
+    <state x="320" y="161" width="800" height="600" key="#com.intellij.featureStatistics.actions.ShowFeatureUsageStatisticsDialog" timestamp="1599100251610">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="320" y="161" width="800" height="600" key="#com.intellij.featureStatistics.actions.ShowFeatureUsageStatisticsDialog/0.23.1440.877/1440.23.1920.1057@0.23.1440.877" timestamp="1599100251610" />
+    <state x="507" y="217" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1599042385416">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="507" y="217" key="#com.intellij.ide.macro.MacrosDialog/0.23.1440.877@0.23.1440.877" timestamp="1599042385416" />
+    <state x="574" y="237" key="EnvironmentVariablesDialog" timestamp="1599042297995">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="574" y="237" key="EnvironmentVariablesDialog/0.23.1440.877@0.23.1440.877" timestamp="1599042297995" />
+    <state width="1398" height="286" key="GridCell.Tab.0.bottom" timestamp="1599101095040">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="286" key="GridCell.Tab.0.bottom/0.23.1440.877/1440.23.1920.1057@0.23.1440.877" timestamp="1599101095040" />
+    <state width="1398" height="232" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1599043015923" />
+    <state width="1398" height="286" key="GridCell.Tab.0.center" timestamp="1599101095039">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="286" key="GridCell.Tab.0.center/0.23.1440.877/1440.23.1920.1057@0.23.1440.877" timestamp="1599101095039" />
+    <state width="1398" height="232" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1599043015922" />
+    <state width="1398" height="286" key="GridCell.Tab.0.left" timestamp="1599101095039">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="286" key="GridCell.Tab.0.left/0.23.1440.877/1440.23.1920.1057@0.23.1440.877" timestamp="1599101095039" />
+    <state width="1398" height="232" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1599043015921" />
+    <state width="1398" height="286" key="GridCell.Tab.0.right" timestamp="1599101095040">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="286" key="GridCell.Tab.0.right/0.23.1440.877/1440.23.1920.1057@0.23.1440.877" timestamp="1599101095040" />
+    <state width="1398" height="232" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1599043015922" />
+    <state width="1398" height="286" key="GridCell.Tab.1.bottom" timestamp="1599101095041">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="286" key="GridCell.Tab.1.bottom/0.23.1440.877/1440.23.1920.1057@0.23.1440.877" timestamp="1599101095041" />
+    <state width="1398" height="286" key="GridCell.Tab.1.center" timestamp="1599101095041">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="286" key="GridCell.Tab.1.center/0.23.1440.877/1440.23.1920.1057@0.23.1440.877" timestamp="1599101095041" />
+    <state width="1398" height="286" key="GridCell.Tab.1.left" timestamp="1599101095040">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="286" key="GridCell.Tab.1.left/0.23.1440.877/1440.23.1920.1057@0.23.1440.877" timestamp="1599101095040" />
+    <state width="1398" height="286" key="GridCell.Tab.1.right" timestamp="1599101095041">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state width="1398" height="286" key="GridCell.Tab.1.right/0.23.1440.877/1440.23.1920.1057@0.23.1440.877" timestamp="1599101095041" />
+    <state x="385" y="213" width="670" height="676" key="search.everywhere.popup" timestamp="1599100233582">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="385" y="213" width="670" height="676" key="search.everywhere.popup/0.23.1440.877/1440.23.1920.1057@0.23.1440.877" timestamp="1599100233582" />
+    <state x="385" y="213" width="670" height="676" key="search.everywhere.popup/0.23.1440.877@0.23.1440.877" timestamp="1599042179079" />
+  </component>
+</project>
